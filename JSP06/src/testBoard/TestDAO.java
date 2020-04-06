@@ -23,12 +23,27 @@ public class TestDAO {
 		}
 	}
 	
-	public ArrayList<TestDTO> list() {
-		String sql = "select * from paging order by num desc";
+	public ArrayList<TestDTO> list(int start) {
+		int firstNum = 0; int lastNum = 0;
+		//String sql = "select * from paging order by num desc";
+		String sql = "select B.* from(select rownum rn, A.* from(" + 
+				"select * from paging order by num desc)A)B" + 
+				" where rn between ? and ?";
 		ArrayList<TestDTO> listDto = new ArrayList<TestDTO>();
+		
+		if(start==0 || start==1) {
+			firstNum = 1;
+			lastNum = 5;
+		}else {
+			firstNum = (5*(start-1))+1;
+			lastNum = 5*start;
+		}
+		
 		try{
 			con = DriverManager.getConnection(url, id, pwd);
 			ps = con.prepareStatement(sql);
+			ps.setInt(1, firstNum);
+			ps.setInt(2, lastNum);
 			rs = ps.executeQuery();
 			
 			while (rs.next()) {
@@ -88,6 +103,12 @@ public class TestDAO {
 		}
 		return totalPage;
 	}
+	
+	public int page(int totalPage) {
+		int pageResult = totalPage / 5;
+		if(totalPage % 5 != 0) ++pageResult;
+		return pageResult;
+	}
 }
 
 /* 생성한 sql 구문
@@ -106,7 +127,7 @@ select a.num from(select * from paging order by num desc)a where num between 1 a
 */
 
 /*최종적으로 사용할, 페이징을 위한 sql문.. rn은 rownum에게 붙여준 별칭.
-select B.* from(select rownum rn, A.* from(
+select B.* from(select rownum rn, A.* from(		rownum과 A의 모든 값을 B에 저장해서 B.*로 B를 쓴다
   select * from paging order by num desc)A)B	num을 내림차순으로 정렬하여 모든 값을 가져와서 A에 저장
-    where rn between 변수명 and 변수명;				rownum을 변수명~변수명 사이의 결과만 보여달라
+    where rn between 변수명 and 변수명;				rownum이 변수명~변수명 사이인 결과만 보여달라
 */

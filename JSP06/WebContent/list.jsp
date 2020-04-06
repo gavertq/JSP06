@@ -12,10 +12,12 @@
 <body>list.jsp<br>
 	<fmt:requestEncoding value="utf-8"/>
 	<jsp:useBean id="dao" class="testBoard.TestDAO"/>
-	<c:set var="listDto" value="${dao.list() }"/>
+
+	<c:set var="listDto" value="${dao.list(param.start) }"/>
 	
 	<%-- 페이징 --%>
 	<c:set var="totalPage" value="${dao.getTotalPage() }"/>	
+	<c:set var="pageResult" value="${dao.page(totalPage) }"/>
 	
 	<table border="1">
 		<tr><th>번호</th><th>제목</th><th>등록날짜</th><th>조회수</th></tr>
@@ -55,7 +57,7 @@
 				</c:choose>
 				
 				<%--페이지 목록 --%>
-				<c:forEach begin="1" end="${totalPage }" step="1" var="cnt">
+				<c:forEach begin="1" end="${pageResult }" step="1" var="cnt">
 					<a href="list.jsp?start=${cnt }">[${cnt }]</a>
 				</c:forEach>
 				
