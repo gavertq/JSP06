@@ -23,6 +23,7 @@ public class TestDAO {
 		}
 	}
 	
+	//페이지 목록 선택에 따른 게시글 변화
 	public ArrayList<TestDTO> list(int start) {
 		int firstNum = 0; int lastNum = 0;
 		//String sql = "select * from paging order by num desc";
@@ -61,6 +62,7 @@ public class TestDAO {
 		return listDto;
 	}
 	
+	//등록
 	public void insert(TestDTO dto) {		//test_num.nextval: 가상의 넘버링, 시퀀스로 만든 test_num의 다음 값을 넣어준다는 뜻. 
 		String sql = "insert into Paging(num, title, pdate, count) values(test_num.nextval, ?, sysdate, 0)";
 		
@@ -75,6 +77,7 @@ public class TestDAO {
 		}
 	}
 	
+	//조회수
 	public void count(int num) {
 		String sql = "update paging set count = count+1 where num ="+num;
 		
@@ -88,6 +91,7 @@ public class TestDAO {
 		}
 	}
 	
+	//페이지 목록 계산을 위한 총 게시물 갯수
 	public int getTotalPage() {	//시퀀스 번호를 찾으면(시퀀스는 숫자가 들어갈 때 사이에 몇 개가 빠지는 경우가 종종 발생) 페이지수에 오차가 생기므로
 								//rownum으로 숫자를 찾을 것.
 		String sql = "select count(*) from paging";	//현재 등록된 내용물 총 갯수(4행이면 4가 나옴)
@@ -104,10 +108,35 @@ public class TestDAO {
 		return totalPage;
 	}
 	
+	//페이지 목록
 	public int page(int totalPage) {
 		int pageResult = totalPage / 5;
 		if(totalPage % 5 != 0) ++pageResult;
 		return pageResult;
+	}
+	
+	//검색
+	public void searching() {	//?(제목 또는 번호)를 기준으로 ?가 들어가는 검색 결과
+		String sql = "select * from paging where ? like %?% irder by num desc";
+		//넘겨받은 ?가 제목이면 String인 title을 , 번호면 int인 num을 기준으로
+		//검색어 ?가 들어가게 설정해야 한다.
+		try {
+			con = DriverManager.getConnection(url, id, pwd);
+			ps = con.prepareStatement(sql);
+			if() {			
+				ps.setString(1, x);
+				ps.setString(2, x);			
+			} else {
+				ps.setInt(1, x);
+				ps.setInt(2, x);
+			}
+			rs = ps.executeQuery();
+			while (rs.next()) {				
+				
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
 

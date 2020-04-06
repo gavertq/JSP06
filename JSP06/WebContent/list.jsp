@@ -1,3 +1,4 @@
+<%@page import="com.sun.xml.internal.txw2.Document"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@taglib uri = "http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -46,13 +47,14 @@
 					</c:otherwise>
 				</c:choose>
 				
+		<%-- 페이징 --%>
 				<%--이전 버튼. 현 페이지에서 -1. 1이면 버튼 비활성화 --%>
 				<c:choose>
 					<c:when test="${start > 1 }">
-						<button type="button" onclick="location.href='list.jsp?start=${start-1}'">이전</button>
+						<button type="button" style="margin-right: 5px;" onclick="location.href='list.jsp?start=${start-1}'">이전</button>
 					</c:when>
 					<c:otherwise>
-						<button type="button" disabled="disabled">이전</button>
+						<button type="button" style="margin-right: 5px;" disabled="disabled">이전</button>
 					</c:otherwise>
 				</c:choose>
 				
@@ -63,18 +65,27 @@
 				
 				<%--다음 버튼. 현 페이지에서 +1. 마지막이면 버튼 비활성화 --%>
 				<c:choose>
-					<c:when test="${start < totalPage }">
-						<button type="button" onclick="location.href='list.jsp?start=${start+1}'">다음</button>
+					<c:when test="${start < pageResult }">
+						<button type="button" style="margin-left: 5px;" onclick="location.href='list.jsp?start=${start+1}'">다음</button>
 					</c:when>
 					<c:otherwise>
-						<button type="button" disabled="disabled">다음</button>
+						<button type="button" style="margin-left: 5px;" disabled="disabled">다음</button>
 					</c:otherwise>
 				</c:choose>
 				
+				<%--현재 페이지 표시 --%>
+				${start } / ${pageResult }				
+				
 				<%--등록 버튼 --%>
-				<button type="button" onclick="location.href='regForm.jsp'">등록</button>
+				<button type="button" style="margin-left: 5px;" onclick="location.href='regForm.jsp'">등록</button>
 			</td></tr>
-		
+		<%-- 검색 --%>
+			<tr>
+				<td><select id="selected_opt"><option value="title">제목</option><option value="num">번호</option></select></td>
+				<td colspan="3"><input type="text">
+				<button type="button" style="margin-left: 5px;" onclick="location.href='select_Result.jsp'">검색</button>
+				</td>
+			</tr>
 	</table>
 	
 </body>
